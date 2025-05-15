@@ -59,22 +59,55 @@ Answer:
  [1, 2, 3]
 ```
 
-## Pushing to GitHub Container Registry
+## Examples
 
-To make your image publicly available via GHCR:
+Below are sample interactions showcasing both direct answers and clarifier questions for ambiguous inputs:
+
+### Direct Queries
+
+````bash
+Query: What is the capital of France?
+Answer:
+ Paris
+```bash
+Query: list [10, 2, 7, 5] in descending order
+Answer:
+ [10, 7, 5, 2]
+````
 
 ```bash
-docker tag llm-query-recommender ghcr.io/mrizwan89/llm-query-recommender:latest
-docker push ghcr.io/mrizwan89/llm-query-recommender:latest
+Query: Who is the president of India?
+Answer:
+ The President of India is Draupadi Murmu (as of 2025).
 ```
 
-Anyone can then:
+### Ambiguous Queries
 
 ```bash
-docker pull ghcr.io/mrizwan89/llm-query-recommender:latest
-docker run -it --rm ghcr.io/mrizwan89/llm-query-recommender
+Query: Show me data
+Need clarification:
+ 1. Which data specifically do you want to see?
 ```
 
----
+```bash
+Query: filter users
+Need clarification:
+ 1. What criteria should be used to filter the users?
+```
 
-Enjoy building conversational data tools with your own LLaMA-powered recommender!
+```bash
+Query: average revenue
+Need clarification:
+ 1. Over what time period should I calculate the average revenue?
+```
+
+### Typo & Spell-Check Handling
+
+```bash
+Query: shpwing me data
+Need clarification:
+ 1. Did you mean "showing"?
+```
+Query: filtre users by age
+Need clarification:
+ 1. Did you mean "filter"?
