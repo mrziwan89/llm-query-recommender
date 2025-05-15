@@ -20,7 +20,7 @@ Clone the repository, build the container, start Ollama, then run the CLI:
 
 ```bash
 # 1. Clone your GitHub repository
-git clone https://github.com/mrizwan89/llm-query-recommender.git
+git clone https://github.com/mrziwan89/llm-query-recommender.git
 
 # 2. Enter the project directory
 cd llm-query-recommender
@@ -65,10 +65,11 @@ Below are sample interactions showcasing both direct answers and clarifier quest
 
 ### Direct Queries
 
-````bash
+```bash
 Query: What is the capital of France?
 Answer:
  Paris
+ ```
 ```bash
 Query: list [10, 2, 7, 5] in descending order
 Answer:
