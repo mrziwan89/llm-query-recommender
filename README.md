@@ -25,19 +25,31 @@ git clone https://github.com/mrziwan89/llm-query-recommender.git
 # 2. Enter the project directory
 cd llm-query-recommender
 
-# 3. (macOS) Start Docker Desktop if needed
+# 3. (Optional) Create & activate a Python virtual environment for local development:
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 4. Install Ollama (if not already available in $PATH):
+#    Download from https://ollama.com/download and follow the install instructions.
+
+# 5. Install Docker:
+#    - macOS/Windows: Download Docker Desktop from https://www.docker.com/products/docker-desktop
+#    - Linux: Install Docker Engine via https://docs.docker.com/engine/install/
+
+# 4. (macOS) Start Docker Desktop if needed
 open -a Docker
 
-# 4. Verify Docker is running
+# 5. Verify Docker is running
 docker version
 
-# 5. Build the Docker image
+# 6. Build the Docker image
 docker build -t llm-query-recommender .
 
-# 6. In one terminal, start Ollama on your host:
+# 7. In one terminal, start Ollama on your host:
 ollama serve
 
-# 7. In another terminal, run the container:
+# 8. In another terminal, run the container:
 #    • macOS/Windows (uses host.docker.internal):
 docker run -it --rm llm-query-recommender
 
