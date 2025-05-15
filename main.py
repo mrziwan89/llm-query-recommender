@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).parent
 spacy.cli.download("en_core_web_sm")
 nlp = spacy.load("en_core_web_sm")
 
-# full extended lemma → intent-symbol map
+# lemma mappings → intent-symbol map
 LEMMA_MAPPING = {
     # ── aggregations
     "average":"AGGREGATE","mean":"AGGREGATE","median":"AGGREGATE","mode":"AGGREGATE",
