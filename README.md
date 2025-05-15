@@ -86,19 +86,19 @@ Answer:
 ```bash
 Query: Show me data
 Need clarification:
- 1. Which data specifically do you want to see?
+ 1. What does the term "data" refer to in this context? Is it referring to information, statistics, or something else?
 ```
 
 ```bash
 Query: filter users
 Need clarification:
- 1. What criteria should be used to filter the users?
+ 1. What does the term "users" refer to in this context? (e.g. people, computers, websites, etc.)
 ```
 
 ```bash
-Query: average revenue
+Query: average sum of age
 Need clarification:
- 1. Over what time period should I calculate the average revenue?
+ 1. What kind of data set are we referring to (e.g. a list of people, a dataset in a particular domain)? And what type of average would you like to calculate (e.g. mean, median, mode)?
 ```
 
 ### Typo & Spell-Check Handling
@@ -106,8 +106,12 @@ Need clarification:
 ```bash
 Query: shpwing me data
 Need clarification:
- 1. Did you mean "showing"?
+ 1. Here's a concise clarifying question for "data":
+ 2. What type of information or content does the term "data" typically refer to?
 ```
+```bash
 Query: filtre users by age
 Need clarification:
- 1. Did you mean "filter"?
+ 1. Here's a concise clarifying question for "data":
+ 2. What type of information or content does the term "data" typically refer to?
+ ```
