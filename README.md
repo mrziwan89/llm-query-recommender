@@ -76,6 +76,7 @@ Answer:
 Below are sample interactions showcasing both direct answers and clarifier questions for ambiguous inputs:
 
 ### Direct Queries
+Direct queries are fully specified requests that the system can answer immediately without asking follow-up questions. They either invoke built-in handlers (e.g., `sort` or `group by`) or forward factual questions straight to the LLaMA model. Examples include “What is the capital of France?” or “Sort [4,2,9] in ascending order.”
 
 ```bash
 Query: What is the capital of France?
@@ -95,6 +96,7 @@ Answer:
 ```
 
 ### Ambiguous Queries
+Ambiguous queries lack sufficient detail or contain multiple possible intents, so the system pauses to request clarification before answering. It uses a lightweight ambiguity classifier and keyword heuristics to generate concise, targeted follow-up questions. For example, “Show me data” becomes “Which data specifically do you want to see?”
 
 ```bash
 Query: Show me data
@@ -115,7 +117,7 @@ Need clarification:
 ```
 
 ### Typo & Spell-Check Handling
-
+When user input contains typos or misspelled words, the system detects unknown terms and proposes likely corrections. It asks a simple confirmation question—e.g., “Did you mean ‘filter’?”—before proceeding. This ensures accurate parsing even with imperfect input.  
 ```bash
 Query: shpwing me data
 Need clarification:
