@@ -66,33 +66,6 @@ CLARIFY_PROMPT = [
     {"role":"assistant","content":"Which data specifically do you want to see?"}
 ]
 
-# ── helper to chat with llama-3 ───────────────────────────────────────────────
-def ask_llm(msgs: List[dict]) -> str:
-    raw = oai.chat(model=LLM_MODEL, messages=msgs)
-    return raw["message"]["content"].strip() if isinstance(raw, dict) else raw.message.content.strip()
-
-
-
-# ── spaCy parse & helpers -----------------------------------------------------
-def parse_query(q: str) -> Dict[str, Any]:
-    doc = nlp(q)
-    symbols = [LEMMA_MAPPING[t.lemma_.lower()] for t in doc if t.lemma_.lower() in LEMMA_MAPPING]
-    entities = [e.text for e in doc.ents]
-    return {"symbols": symbols, "entities": entities}
-
-def unknown_terms(q: str, parsed: Dict[str, Any]) -> List[str]:
-    ents = set(parsed["entities"])
-    return [
-        t.text for t in nlp(q)
-        if (t.is_alpha and not t.is_stop and t.pos_ in {"NOUN","PROPN"}
-            and t.lemma_.lower() not in LEMMA_MAPPING and t.text not in ents)
-    ]
-
-def ambiguous(parsed: Dict[str, Any]) -> bool:
-    sy, n = parsed["symbols"], len(parsed["symbols"])
-    vec = [n, sum(sy.count(x) > 1 for x in sy)/n if n else 0.0,
-           float(bool(parsed["entities"]))]
-    return bool(ambiguity_clf.predict([vec])[0])
 
 # ── central router ------------------------------------------------------------
 def handle(q_raw: str) -> Dict[str, Any]:
@@ -142,6 +115,32 @@ def handle(q_raw: str) -> Dict[str, Any]:
                 {"role":"system","content":"You answer questions directly."},
                 {"role":"user","content":q}
             ])}
+
+# ── spaCy parse & helpers -----------------------------------------------------
+def parse_query(q: str) -> Dict[str, Any]:
+    doc = nlp(q)
+    symbols = [LEMMA_MAPPING[t.lemma_.lower()] for t in doc if t.lemma_.lower() in LEMMA_MAPPING]
+    entities = [e.text for e in doc.ents]
+    return {"symbols": symbols, "entities": entities}
+
+def unknown_terms(q: str, parsed: Dict[str, Any]) -> List[str]:
+    ents = set(parsed["entities"])
+    return [
+        t.text for t in nlp(q)
+        if (t.is_alpha and not t.is_stop and t.pos_ in {"NOUN","PROPN"}
+            and t.lemma_.lower() not in LEMMA_MAPPING and t.text not in ents)
+    ]
+
+def ambiguous(parsed: Dict[str, Any]) -> bool:
+    sy, n = parsed["symbols"], len(parsed["symbols"])
+    vec = [n, sum(sy.count(x) > 1 for x in sy)/n if n else 0.0,
+           float(bool(parsed["entities"]))]
+    return bool(ambiguity_clf.predict([vec])[0])
+
+# ── helper to chat with llama-3 ───────────────────────────────────────────────
+def ask_llm(msgs: List[dict]) -> str:
+    raw = oai.chat(model=LLM_MODEL, messages=msgs)
+    return raw["message"]["content"].strip() if isinstance(raw, dict) else raw.message.content.strip()
 
 # ── literal “sort …” handler --------------------------------------------------
 def sort(q: str) -> Optional[Any]:
