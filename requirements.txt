@@ -1,0 +1,7 @@
+# Core
+httpx>=0.23.0
+spacy>=3.0.0
+ollama>=0.1.0
+# Used by your script
+pickle5
+scikit-learn>=1.0
