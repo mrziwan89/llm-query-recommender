@@ -106,12 +106,10 @@ Need clarification:
 ```bash
 Query: shpwing me data
 Need clarification:
- 1. Here's a concise clarifying question for "data":
- 2. What type of information or content does the term "data" typically refer to?
+ 1. What does "shpwing" mean in this context?
 ```
 ```bash
 Query: filtre users by age
 Need clarification:
- 1. Here's a concise clarifying question for "data":
- 2. What type of information or content does the term "data" typically refer to?
+ 1. What does "filtre" mean in this context?
  ```
