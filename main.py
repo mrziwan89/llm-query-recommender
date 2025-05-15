@@ -57,7 +57,7 @@ with open(BASE_DIR / "models" / "ambiguity_clf.pkl", "rb") as f:
 
 
 ollama_host = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
-oai = Client(host=ollama_host)
+oai = Client(base_url=ollama_host)
 LLM_MODEL = "llama3.1:latest"
 
 CLARIFY_PROMPT = [
@@ -71,38 +71,7 @@ def ask_llm(msgs: List[dict]) -> str:
     raw = oai.chat(model=LLM_MODEL, messages=msgs)
     return raw["message"]["content"].strip() if isinstance(raw, dict) else raw.message.content.strip()
 
-# ── literal “sort …” handler --------------------------------------------------
-def sort(q: str) -> Optional[Any]:
-    m = re.search(r"sort.*\[(.*)]\s+in\s+(ascending|descending)", q, re.I)
-    if not m:
-        if re.search(r"\b(sort|order)\b", q, re.I):
-            return "Syntax tip → Sort the list [1,3,2] in ascending order."
-        return None
-    nums, direction = m.group(1), m.group(2).lower()
-    try:
-        arr = ast.literal_eval(f"[{nums}]")
-        return sorted(arr, reverse=(direction == "descending"))
-    except Exception:
-        return "Couldn't parse the list; please use JSON-style numbers."
 
-# ── literal “group by …” handler ---------------------------------------------
-def group_by(q: str) -> Optional[Any]:
-    m = re.search(r"group\s+by\s+(\w+)\s*:\s*(\[[^\]]+\])", q, re.I)
-    if not m:
-        if re.search(r"\bgroup\s+by\b", q, re.I):
-            return "Syntax tip → Group by dept: [{'name':'A','dept':'HR'}, …]"
-        return None
-    field, literal = m.group(1), m.group(2)
-    try:
-        items = ast.literal_eval(literal)
-        if not (isinstance(items, list) and all(isinstance(r, dict) for r in items)):
-            raise ValueError
-        out: Dict[Any, List[Any]] = {}
-        for rec in items:
-            out.setdefault(rec.get(field), []).append(rec)
-        return out
-    except Exception:
-        return "Couldn't parse the list — check the JSON syntax."
 
 # ── spaCy parse & helpers -----------------------------------------------------
 def parse_query(q: str) -> Dict[str, Any]:
@@ -173,6 +142,39 @@ def handle(q_raw: str) -> Dict[str, Any]:
                 {"role":"system","content":"You answer questions directly."},
                 {"role":"user","content":q}
             ])}
+
+# ── literal “sort …” handler --------------------------------------------------
+def sort(q: str) -> Optional[Any]:
+    m = re.search(r"sort.*\[(.*)]\s+in\s+(ascending|descending)", q, re.I)
+    if not m:
+        if re.search(r"\b(sort|order)\b", q, re.I):
+            return "Syntax tip → Sort the list [1,3,2] in ascending order."
+        return None
+    nums, direction = m.group(1), m.group(2).lower()
+    try:
+        arr = ast.literal_eval(f"[{nums}]")
+        return sorted(arr, reverse=(direction == "descending"))
+    except Exception:
+        return "Couldn't parse the list; please use JSON-style numbers."
+
+# ── literal “group by …” handler ---------------------------------------------
+def group_by(q: str) -> Optional[Any]:
+    m = re.search(r"group\s+by\s+(\w+)\s*:\s*(\[[^\]]+\])", q, re.I)
+    if not m:
+        if re.search(r"\bgroup\s+by\b", q, re.I):
+            return "Syntax tip → Group by dept: [{'name':'A','dept':'HR'}, …]"
+        return None
+    field, literal = m.group(1), m.group(2)
+    try:
+        items = ast.literal_eval(literal)
+        if not (isinstance(items, list) and all(isinstance(r, dict) for r in items)):
+            raise ValueError
+        out: Dict[Any, List[Any]] = {}
+        for rec in items:
+            out.setdefault(rec.get(field), []).append(rec)
+        return out
+    except Exception:
+        return "Couldn't parse the list — check the JSON syntax."
 
 # ── simple REPL ---------------------------------------------------------------
 if __name__ == "__main__":
