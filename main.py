@@ -13,6 +13,21 @@ BASE_DIR = Path(__file__).parent
 spacy.cli.download("en_core_web_sm")
 nlp = spacy.load("en_core_web_sm")
 
+
+with open(BASE_DIR / "models" / "ambiguity_clf.pkl", "rb") as f:
+    ambiguity_clf = pickle.load(f)
+
+
+ollama_host = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
+oai = Client(base_url=ollama_host)
+LLM_MODEL = "llama3.1:latest"
+
+CLARIFY_PROMPT = [
+    {"role":"system","content":"You ask concise clarifying questions for ambiguous queries."},
+    {"role":"user","content":"Show me data."},
+    {"role":"assistant","content":"Which data specifically do you want to see?"}
+]
+
 # lemma mappings → intent-symbol map
 LEMMA_MAPPING = {
     # ── aggregations
@@ -51,21 +66,6 @@ LEMMA_MAPPING = {
     "president":"TITLE","prime":"TITLE","minister":"TITLE","king":"TITLE",
     "queen":"TITLE","ceo":"TITLE","founder":"TITLE","author":"TITLE"
 }
-
-with open(BASE_DIR / "models" / "ambiguity_clf.pkl", "rb") as f:
-    ambiguity_clf = pickle.load(f)
-
-
-ollama_host = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
-oai = Client(base_url=ollama_host)
-LLM_MODEL = "llama3.1:latest"
-
-CLARIFY_PROMPT = [
-    {"role":"system","content":"You ask concise clarifying questions for ambiguous queries."},
-    {"role":"user","content":"Show me data."},
-    {"role":"assistant","content":"Which data specifically do you want to see?"}
-]
-
 
 # ── central router ------------------------------------------------------------
 def handle(q_raw: str) -> Dict[str, Any]:
